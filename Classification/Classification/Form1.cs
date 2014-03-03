@@ -1,12 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Classification
@@ -34,9 +28,11 @@ namespace Classification
 
 		private void buttonGenerateNoise_Click(object sender, EventArgs e)
 		{
+			var appSetting = ConfigurationManager.AppSettings;
+			var key = appSetting[comboBoxLetter.SelectedItem.ToString()];
 			int percentOfNoise;
 			int.TryParse(comboBoxPercentOfNoise.SelectedItem.ToString(), out percentOfNoise);
-			pictureBoxOriginal.Image = NoiseGenerator.MakeNoisy(originalImage, percentOfNoise);
+			pictureBoxOriginal.Image = NoiseGenerator.MakeNoisy(new Bitmap(_originalImages[key]), percentOfNoise);
 		}
 
 		private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
