@@ -9,70 +9,77 @@ using System.Xml.Serialization;
 
 namespace Classification
 {
-    public class NeuralNetwork
-    {
-        private int[,] neuralNetwork;
+	public class NeuralNetwork
+	{
+		private int[,] neuralNetwork;
 
-        public void TeachingNeuralNetwork(Bitmap[] images)
-        {
-            var matrixsList = new List<int[,]>();
-            foreach (var image in images)
-            {
-                var vector = new int[image.Width*image.Height];
+		public void TeachingNeuralNetwork(Bitmap[] images)
+		{
+			var matrixsList = new List<int[,]>();
+			foreach (var image in images)
+			{
+				var vector = new int[image.Width * image.Height];
 
-                for (int i = 0; i < image.Height; i++)
-                {
-                    for (int j = 0; j < image.Width; j++)
-                    {
-                        vector[j + (i*image.Height)] = ActivationFunction(image.GetPixel(i, j));
-                    }
-                }
-                matrixsList.Add(TransponentF(vector));
-            }
+				for (int i = 0; i < image.Height; i++)
+				{
+					for (int j = 0; j < image.Width; j++)
+					{
+						vector[j + (i * image.Height)] = ActivationFunction(image.GetPixel(i, j));
+					}
+				}
+				matrixsList.Add(TransponentF(vector));
+			}
 
-            neuralNetwork = SumOfMatrixs(matrixsList);
-        }
+			neuralNetwork = SumOfMatrixs(matrixsList);
+		}
 
-        private int[,] SumOfMatrixs(List<int[,]> list)
-        {
-            var resultMatrix = new int[list[0].GetLength(0), list[0].GetLength(1)];
-            foreach (var matrix in list)
-            {
-                for (int i = 0; i < matrix.GetLength(0); i++)
-                {
-                    for (int j = 0; j < matrix.GetLength(1); j++)
-                    {
-                        resultMatrix[i,j] += matrix[i,j];
-                    }
-                }
-            }
+		private int[,] SumOfMatrixs(List<int[,]> list)
+		{
+			var width = list[0].GetLength(0);
+			var height = list[0].GetLength(1);
 
-            return resultMatrix;
-        }
+			var resultMatrix = new int[width, height];
 
-        private int ActivationFunction(Color color)
-        {
-            if (color.B > 127 && color.R > 127 && color.G > 127)
-            {
-                return 1;
-            }
+			for (int i = 0; i < width; i++)
+			{
+				for (int j = 0; j < height; j++)
+				{
+					if (i != j)
+					{
+						foreach (var matrix in list)
+						{
+							resultMatrix[i, j] += matrix[i, j];
+						}
+					}
+				}
+			}
 
-            return -1;
-        }
+			return resultMatrix;
+		}
 
-        private int[,] TransponentF(int[] vector)
-        {
-            var length = vector.Length;
-            var resultMatrix = new int[length, length];
-            
-            for (int i = 0; i < length; i++)
-            {
-                for (int j = 0; j < length; j++)
-                {
-                    resultMatrix[j, i] = vector[j] * vector[i];
-                }
-            }
-            return resultMatrix;
-        }
-    }
+		private int ActivationFunction(Color color)
+		{
+			if (color.B > 127 && color.R > 127 && color.G > 127)
+			{
+				return 1;
+			}
+
+			return -1;
+		}
+
+		private int[,] TransponentF(int[] vector)
+		{
+			var length = vector.Length;
+			var resultMatrix = new int[length, length];
+
+			for (int i = 0; i < length; i++)
+			{
+				for (int j = 0; j < length; j++)
+				{
+					resultMatrix[i, j] = vector[j] * vector[i];
+				}
+			}
+			return resultMatrix;
+		}
+	}
 }
