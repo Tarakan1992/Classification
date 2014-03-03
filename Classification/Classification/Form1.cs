@@ -20,8 +20,9 @@ namespace Classification
 		    var letters = new string[] {"K", "L", "M", "N"};
 		    foreach (var item in letters)
 		    {
-                images.Add(new Bitmap(@"C:\Users\Alex\Documents\Visual Studio 2013\Projects\DSIP\Classification\Classification\Classification\Content\" + item.ToString() + ".png"));
+                images.Add(new Bitmap(@"..\..\Content\" + item + ".png"));
 		    }
+
             neuralNetwork.TeachingNeuralNetwork(images.ToArray());
 		}
 
@@ -60,7 +61,7 @@ namespace Classification
             }
 
             Directory.GetCurrentDirectory();
-            originalImage = new Bitmap(@"C:\Users\Alex\Documents\Visual Studio 2013\Projects\DSIP\Classification\Classification\Classification\Content\" + currentImageName + ".png");
+            originalImage = new Bitmap(@"..\..\Content\" + currentImageName + ".png");
             pictureBoxOriginal.Image = originalImage;
             pictureBoxOriginal.SizeMode = PictureBoxSizeMode.StretchImage;
             
@@ -76,7 +77,7 @@ namespace Classification
 
         private void buttonStart_Click(object sender, EventArgs e)
         {
-            
+           
         }
 	}
 }

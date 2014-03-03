@@ -1,11 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Imaging;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Serialization;
 
 namespace Classification
 {
@@ -16,21 +11,28 @@ namespace Classification
         public void TeachingNeuralNetwork(Bitmap[] images)
         {
             var matrixsList = new List<int[,]>();
+            
             foreach (var image in images)
             {
-                var vector = new int[image.Width*image.Height];
-
-                for (int i = 0; i < image.Height; i++)
-                {
-                    for (int j = 0; j < image.Width; j++)
-                    {
-                        vector[j + (i*image.Height)] = ActivationFunction(image.GetPixel(i, j));
-                    }
-                }
-                matrixsList.Add(TransponentF(vector));
+                matrixsList.Add(TransponentF(GetVectorFromImage(image)));
             }
 
             neuralNetwork = SumOfMatrixs(matrixsList);
+        }
+
+        public Bitmap RecognizeImage(Bitmap image)
+        {
+            var resultMatrix = new int[image.Width, image.Height];
+            var vector = GetVectorFromImage(image);
+
+            for (int i = 0; i < neuralNetwork.GetLength(0); i++)
+            {
+                for (int j = 0; j < neuralNetwork.GetLength(1); j++)
+                {
+                    resultMatrix[i, j] += neuralNetwork[i, j]*vector[i*image.Width + j];
+                }
+            }
+            return image;
         }
 
         private int[,] SumOfMatrixs(List<int[,]> list)
@@ -42,12 +44,34 @@ namespace Classification
                 {
                     for (int j = 0; j < matrix.GetLength(1); j++)
                     {
-                        resultMatrix[i,j] += matrix[i,j];
+                        if (i != j)
+                        {
+                            resultMatrix[i, j] += matrix[i, j];
+                        }
+                        else
+                        {
+                            resultMatrix[i, j] = 0;
+                        }
                     }
                 }
             }
 
             return resultMatrix;
+        }
+
+        private int[] GetVectorFromImage(Bitmap image)
+        {
+            var vector = new int[image.Width * image.Height];
+
+            for (int i = 0; i < image.Height; i++)
+            {
+                for (int j = 0; j < image.Width; j++)
+                {
+                    vector[j + (i * image.Height)] = ActivationFunction(image.GetPixel(i, j));
+                }
+            }
+
+            return vector;
         }
 
         private int ActivationFunction(Color color)
