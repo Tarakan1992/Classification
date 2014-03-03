@@ -216,17 +216,17 @@
 
 		#endregion
 
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private System.Windows.Forms.PictureBox pictureBoxOriginal;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
-        private System.Windows.Forms.ComboBox comboBoxLetter;
-        private System.Windows.Forms.ComboBox comboBoxPercentOfNoise;
-        private System.Windows.Forms.Button buttonGenerateNoise;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Button buttonStart;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel3;
-        private System.Windows.Forms.PictureBox pictureBoxResult;
+		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+		private System.Windows.Forms.PictureBox pictureBoxOriginal;
+		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
+		private System.Windows.Forms.ComboBox comboBoxLetter;
+		private System.Windows.Forms.ComboBox comboBoxPercentOfNoise;
+		private System.Windows.Forms.Button buttonGenerateNoise;
+		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.Button buttonStart;
+		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel3;
+		private System.Windows.Forms.PictureBox pictureBoxResult;
 	}
 }
 

@@ -11,62 +11,58 @@ using System.Windows.Forms;
 
 namespace Classification
 {
+	using System.Configuration;
+
 	public partial class Form1 : Form
 	{
-	    private Bitmap originalImage;
+		private Bitmap originalImage;
+		private Dictionary<string, Bitmap> _originalImages;
+
 		public Form1()
 		{
 			InitializeComponent();
-		    originalImage = null;
+			originalImage = null;
+			_originalImages = new Dictionary<string, Bitmap>();
+			ImageInitialization();
+
 		}
 
-        private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e)
-        {
+		private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e)
+		{
 
-        }
+		}
 
-        private void buttonGenerateNoise_Click(object sender, EventArgs e)
-        {
-            int percentOfNoise;
-            int.TryParse(comboBoxPercentOfNoise.SelectedItem.ToString(), out percentOfNoise);
-            pictureBoxOriginal.Image = NoiseGenerator.MakeNoisy(originalImage, percentOfNoise);
-        }
+		private void buttonGenerateNoise_Click(object sender, EventArgs e)
+		{
+			int percentOfNoise;
+			int.TryParse(comboBoxPercentOfNoise.SelectedItem.ToString(), out percentOfNoise);
+			pictureBoxOriginal.Image = NoiseGenerator.MakeNoisy(originalImage, percentOfNoise);
+		}
 
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            string currentImageName = "";
-            switch (comboBoxLetter.SelectedItem.ToString())
-            {
-                case "К":
-                    currentImageName = "K";
-                    break;
-                case "Л":
-                    currentImageName = "L";
-                    break;
-                case "М":
-                    currentImageName = "M";
-                    break;
-                case "Н":
-                    currentImageName = "N";
-                    break;
-                default:
-                    Console.WriteLine("Wrong input");
-                    break;
-            }
+		private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			originalImage = new Bitmap(_originalImages[ConfigurationManager.AppSettings[comboBoxLetter.SelectedItem.ToString()]]);
+			pictureBoxOriginal.Image = originalImage;
+			pictureBoxOriginal.SizeMode = PictureBoxSizeMode.StretchImage;
 
-            Directory.GetCurrentDirectory();
-            originalImage = new Bitmap("Content\\" + currentImageName + ".png");
-            pictureBoxOriginal.Image = originalImage;
-            pictureBoxOriginal.SizeMode = PictureBoxSizeMode.StretchImage;
-            
-        }
+		}
 
-        private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (comboBoxLetter.SelectedIndex != 0 && comboBoxPercentOfNoise.SelectedIndex != 0)
-            {
-                buttonGenerateNoise.Enabled = true;
-            }
-        }
+		private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			if (comboBoxLetter.SelectedIndex != 0 && comboBoxPercentOfNoise.SelectedIndex != 0)
+			{
+				buttonGenerateNoise.Enabled = true;
+			}
+		}
+
+		private void ImageInitialization()
+		{
+			var appSettings = ConfigurationManager.AppSettings;
+			foreach (var letter in comboBoxLetter.Items)
+			{
+				var key = appSettings[letter.ToString()];
+				_originalImages[key] = new Bitmap("../../Content/" + key +".png");
+			}
+		}
 	}
 }
