@@ -55,7 +55,7 @@ namespace Classification
             }
 
             Directory.GetCurrentDirectory();
-            originalImage = new Bitmap(@"C:\Users\Alex\Documents\Visual Studio 2013\Projects\DSIP\Classification\Classification\Classification\Content\" + currentImageName + ".png");
+            originalImage = new Bitmap("Content\\" + currentImageName + ".png");
             pictureBoxOriginal.Image = originalImage;
             pictureBoxOriginal.SizeMode = PictureBoxSizeMode.StretchImage;
             
