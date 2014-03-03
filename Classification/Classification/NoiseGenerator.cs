@@ -11,19 +11,33 @@ namespace Classification
     {
         public static Bitmap MakeNoisy(Bitmap original, int percentOfNoise)
         {
-            var loopsNumber = ((original.Width * original.Height*percentOfNoise)/100);
+            //var loopsNumber = ((original.Width * original.Height*percentOfNoise)/100);
             var randomGenerator = new Random();
-            int x, y;
-
-            for (int i = 0; i < loopsNumber; i++)
+            
+            for ( int x = 0; x < original.Width; x ++)
             {
-                x = randomGenerator.Next(0, original.Width);
-                y = randomGenerator.Next(0, original.Height);
-                var currentColor = original.GetPixel(x, y);
-                var newColor = Color.FromArgb(255 - currentColor.R, 255 - currentColor.G, 255 - currentColor.B);
-                original.SetPixel(x, y, newColor);
+                for (int y = 0; y < original.Height; y ++)
+                {
+                    if (randomGenerator.Next(100) > percentOfNoise)
+                    {
+                        continue;
+                    }
+                    var currentColor = original.GetPixel(x, y);
+                    var newColor = Color.FromArgb(255 - currentColor.R, 255 - currentColor.G, 255 - currentColor.B);
+                    original.SetPixel(x, y, newColor);
+                }
+                
             }
 
+            //for (int i = 0; i < loopsNumber; i++)
+            //{
+            //    x = randomGenerator.Next(0, original.Width);
+            //    y = randomGenerator.Next(0, original.Height);
+            //    var currentColor = original.GetPixel(x, y);
+            //    var newColor = Color.FromArgb(255 - currentColor.R, 255 - currentColor.G, 255 - currentColor.B);
+            //    original.SetPixel(x, y, newColor);
+            //}
+            
             return original;
         }
     }
