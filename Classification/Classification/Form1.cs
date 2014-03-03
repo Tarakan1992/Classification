@@ -1,12 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Classification
@@ -14,10 +9,20 @@ namespace Classification
 	public partial class Form1 : Form
 	{
 	    private Bitmap originalImage;
+	    private NeuralNetwork neuralNetwork;
 		public Form1()
 		{
 			InitializeComponent();
 		    originalImage = null;
+            neuralNetwork = new NeuralNetwork();
+            
+		    var images = new List<Bitmap>();
+		    var letters = new string[] {"K", "L", "M", "N"};
+		    foreach (var item in letters)
+		    {
+                images.Add(new Bitmap(@"C:\Users\Alex\Documents\Visual Studio 2013\Projects\DSIP\Classification\Classification\Classification\Content\" + item.ToString() + ".png"));
+		    }
+            neuralNetwork.TeachingNeuralNetwork(images.ToArray());
 		}
 
         private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e)
@@ -67,6 +72,11 @@ namespace Classification
             {
                 buttonGenerateNoise.Enabled = true;
             }
+        }
+
+        private void buttonStart_Click(object sender, EventArgs e)
+        {
+            
         }
 	}
 }
