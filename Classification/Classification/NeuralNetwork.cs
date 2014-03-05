@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Imaging;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Serialization;
 
 namespace Classification
 {
+	using System.Linq;
+
 	public class NeuralNetwork
 	{
 		private int[,] neuralNetwork;
@@ -18,16 +15,7 @@ namespace Classification
 			var matrixsList = new List<int[,]>();
 			foreach (var image in images)
 			{
-				var vector = new int[image.Width * image.Height];
-
-				for (int i = 0; i < image.Height; i++)
-				{
-					for (int j = 0; j < image.Width; j++)
-					{
-						vector[j + (i * image.Height)] = ActivationFunction(image.GetPixel(i, j));
-					}
-				}
-				matrixsList.Add(TransponentF(vector));
+				matrixsList.Add(TransponentF(GetVectorFromImage(image)));
 			}
 
 			neuralNetwork = SumOfMatrixs(matrixsList);
@@ -40,21 +28,40 @@ namespace Classification
 
 			var resultMatrix = new int[width, height];
 
-			for (int i = 0; i < width; i++)
+			foreach (var matrix in list)
 			{
-				for (int j = 0; j < height; j++)
+				for (int i = 0; i < width; i++)
 				{
-					if (i != j)
+					for (int j = 0; j < height; j++)
 					{
-						foreach (var matrix in list)
+						if (i != j)
 						{
 							resultMatrix[i, j] += matrix[i, j];
+						}
+						else
+						{
+							resultMatrix[i, j] = 0;
 						}
 					}
 				}
 			}
 
 			return resultMatrix;
+		}
+
+		private int[] GetVectorFromImage(Bitmap image)
+		{
+			var vector = new int[image.Width * image.Height];
+
+			for (int i = 0; i < image.Width; i++)
+			{
+				for (int j = 0; j < image.Height; j++)
+				{
+					vector[j + (i * image.Width)] = ActivationFunction(image.GetPixel(i, j));
+				}
+			}
+
+			return vector;
 		}
 
 		private int ActivationFunction(Color color)
@@ -76,10 +83,59 @@ namespace Classification
 			{
 				for (int j = 0; j < length; j++)
 				{
-					resultMatrix[i, j] = vector[j] * vector[i];
+					resultMatrix[i, j] = vector[i] * vector[j];
 				}
 			}
 			return resultMatrix;
+		}
+
+		public Bitmap RecognizeImage(Bitmap image)
+		{
+			var result = new int[image.Width * image.Height];
+			var vector = GetVectorFromImage(image);
+
+			for (int k = 0; k < 50; k++)
+			{
+				for (int i = 0; i < neuralNetwork.GetLength(0); i++)
+				{
+					for (int j = 0; j < neuralNetwork.GetLength(1); j++)
+					{
+						result[i] += neuralNetwork[i, j]*vector[j];
+					}
+				}
+			}
+
+			for (int i = 0; i < image.Width; i++)
+			{
+				result[i] = LimitFunction(result[i]);
+			}
+
+			return DecodeImage(result, image.Width, image.Height);
+		}
+
+		private int LimitFunction(int x)
+		{
+			return x >= 0 ? 1 : -1;
+		}
+
+		private Bitmap DecodeImage(int[] vector, int width, int height)
+		{
+			var image = new Bitmap(width, height);
+
+			for (int i = 0; i < width; i++)
+			{
+				for (int j = 0; j < height; j++)
+				{
+					image.SetPixel(i, j, DeactivationFunction(vector[i * width + j]));
+				}
+			}
+
+			return image;
+		}
+
+		private Color DeactivationFunction(int x)
+		{
+			return x > 0 ? Color.White : Color.Black;
 		}
 	}
 }
