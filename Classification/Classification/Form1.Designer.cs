@@ -93,7 +93,8 @@
             "К",
             "Л",
             "М",
-            "Н"});
+            "Н"
+            });
 			this.comboBoxLetter.Location = new System.Drawing.Point(3, 49);
 			this.comboBoxLetter.Name = "comboBoxLetter";
 			this.comboBoxLetter.Size = new System.Drawing.Size(180, 21);

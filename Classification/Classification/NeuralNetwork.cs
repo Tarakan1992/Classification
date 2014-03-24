@@ -92,28 +92,61 @@ namespace Classification
 		public Bitmap RecognizeImage(Bitmap image)
 		{
 			var result = new int[image.Width * image.Height];
+		    //int[] result;
 			var vector = GetVectorFromImage(image);
 
-			for (int k = 0; k < 50; k++)
-			{
-				for (int i = 0; i < neuralNetwork.GetLength(0); i++)
-				{
-					for (int j = 0; j < neuralNetwork.GetLength(1); j++)
-					{
-						result[i] += neuralNetwork[i, j]*vector[j];
-					}
-				}
-			}
+		    var i = 0;
 
-			for (int i = 0; i < image.Width; i++)
-			{
-				result[i] = LimitFunction(result[i]);
-			}
+		    while (true)
+		    {
+                Recognize(vector).CopyTo(result, 0);
 
-			return DecodeImage(result, image.Width, image.Height);
+                if (Compare(result, vector))
+                {
+                    break;
+                }
+
+		        result.CopyTo(vector, 0);
+		    }
+		    
+
+
+		    return DecodeImage(result, image.Width, image.Height);
 		}
 
-		private int LimitFunction(int x)
+
+	    private bool Compare(int[] vector1, int[] vector2)
+	    {
+            for (int i = 0; i < vector1.Length; i++)
+            {
+                if (vector1[i] != vector2[i])
+                {
+                    return false;
+                }
+            }
+	        return true;
+	    }
+
+	    private int[] Recognize(int[] vector)
+	    {
+	        var result = new int[vector.Length];
+            for (int i = 0; i < neuralNetwork.GetLength(0); i++)
+            {
+                for (int j = 0; j < neuralNetwork.GetLength(1); j++)
+                {
+                    result[i] += neuralNetwork[i, j] * vector[j];
+                }
+            }
+
+            for (int i = 0; i < result.Length; i++)
+            {
+                result[i] = LimitFunction(result[i]);
+            }
+
+	        return result;
+	    }
+
+	    private int LimitFunction(int x)
 		{
 			return x >= 0 ? 1 : -1;
 		}
